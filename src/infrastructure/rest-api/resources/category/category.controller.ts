@@ -1,11 +1,12 @@
 import "reflect-metadata";
 import "express-async-errors";
-import { Controller, Delete, Get, Post } from "@overnightjs/core";
+import { Controller, Delete, Get, Post, Put } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { InternalServerError } from "../../helpers/ApiErrors";
 import { CategoryRepositoryInterface } from "../../../../domain/category/category.repository.interface";
 import { CategoryDto } from "../../../../domain/category/category.dto";
 import { CreateCategory } from "../../../../use-cases/create-category/create-category";
+import { FindOneOptions } from "typeorm";
 
 @Controller("api/categories")
 export class CategoryController {
@@ -38,5 +39,16 @@ export class CategoryController {
     const id = req.params.id;
     const deleted = await this.categoryRepository.delete(id);
     return res.status(204).json(deleted);
+  }
+
+  @Put(":id")
+  async update(req: Request, resp: Response) {
+    const id = req.params.id;
+    const input: Partial<CategoryDto> = req.body;
+    await this.categoryRepository.update(input, id);
+    const productUpdate = await this.categoryRepository.findById(
+      id as FindOneOptions
+    );
+    return resp.status(200).json(productUpdate);
   }
 }

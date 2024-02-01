@@ -1,31 +1,31 @@
-import { Column, Entity, ObjectIdColumn } from "typeorm";
-import Category from "../../../../../domain/category/category.entity";
+import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import { CategoryModel } from './category.mongo.entity';
 
-@Entity({ name: "products" })
+@Entity({ name: 'products' })
 export class ProductModel {
   @ObjectIdColumn()
   _id: string;
 
   @Column({
-    type: "string",
+    unique: true,
   })
   ownerId: string;
 
   @Column({
-    type: "number",
+    type: 'number',
   })
   price: number;
 
   @Column({
-    type: "string",
+    type: 'string',
   })
   title: string;
 
   @Column({
-    type: "string",
+    type: 'string',
   })
   description: string;
 
   @Column({})
-  category: Category;
+  category: CategoryModel;
 }

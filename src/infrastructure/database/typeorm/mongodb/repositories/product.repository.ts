@@ -1,4 +1,4 @@
-import { DeleteResult, FindOneOptions, Repository } from "typeorm";
+import { DeleteResult, FindOneOptions, RelationOptions, Repository } from "typeorm";
 import { ProductRepositoryInteface } from "../../../../../domain/product/product.repository.inteface";
 import { ProductModel } from "../entities/product.mongo.entity";
 import { AppDataSource } from "../data-source";
@@ -21,7 +21,7 @@ export class ProductRepository implements ProductRepositoryInteface {
     return await this.repository.save(newProduct);
   }
 
-  async update(entity: any, id: string): Promise<unknown> {
+  async update(entity: Partial<ProductModel>, id: string): Promise<unknown> {
     return await this.repository.update(id, entity)
   }
 

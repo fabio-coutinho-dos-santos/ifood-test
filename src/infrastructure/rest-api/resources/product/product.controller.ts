@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import "express-async-errors";
-import { Controller, Delete, Get, Post, Patch } from "@overnightjs/core";
+import { Controller, Delete, Get, Post, Patch, Put } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { ProductDto } from "../../../../domain/product/product.dto";
 import { InternalServerError, NotFoundError } from "../../helpers/ApiErrors";
@@ -74,5 +74,16 @@ export class ProductController {
       console.log(error);
       return resp.status(404).json({ message: String(error) });
     }
+  }
+
+  @Put(":id")
+  async update(req: Request, resp: Response) {
+    const id = req.params.id;
+    const input: Partial<ProductDto> = req.body;
+    await this.productRepository.update(input, id);
+    const productUpdate = await this.productRepository.findById(
+      id as FindOneOptions
+    );
+    return resp.status(200).json(productUpdate);
   }
 }

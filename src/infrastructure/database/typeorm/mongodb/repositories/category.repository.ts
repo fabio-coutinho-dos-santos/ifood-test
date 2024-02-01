@@ -21,8 +21,8 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     return await this.repository.save(newCategory);
   }
 
-  update(entity: ProductModel, id: string): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async update(entity: Partial<CategoryModel>, id: string): Promise<unknown> {
+    return await this.repository.update(id, entity)
   }
 
   async delete(id: string): Promise<DeleteResult> {

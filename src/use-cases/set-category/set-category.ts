@@ -13,8 +13,7 @@ export default class SetCategory {
       categoryStored.description,
       categoryStored.ownerId
     )
-
-    product.category = category;
+    product.category = categoryStored;
     await this.productRepository.update(product, product._id)
     return await this.productRepository.findById(product._id as FindOneOptions)
   }
