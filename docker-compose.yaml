@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  svc-ifood-api:
+    container_name: svc-ifood-api
+    build: .
+    working_dir: /app
+    depends_on:
+     - svc-ifood-mongodb
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    command: "dev"
+    networks:
+      - net-ifood
+
+  svc-ifood-mongodb:
+    image: mongo
+    container_name: svc-ifood-mongodb
+    ports:
+      - 2717:27017
+    environment:
+      MONGO_INITDB_DATABASE: nodeauth
+      MONGO_INITDB_ROOT_USERNAME: nodeauth
+      MONGO_INITDB_ROOT_PASSWORD: nodeauth
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
+    volumes:
+      - mongodbdata:/data/db
+    networks:
+        - net-ifood
+networks:
+  net-ifood:
+    external:
+      name: net-ifood
+
+volumes:
+  mongodbdata:
+    driver: local
+
+  
