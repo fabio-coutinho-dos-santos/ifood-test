@@ -4,9 +4,8 @@ import * as bodyParser from "body-parser";
 import { ProductController } from "./resources/product/product.controller";
 import { AppDataSource } from "../database/typeorm/mongodb/data-source";
 import { ProductRepository } from "../database/typeorm/mongodb/repositories/product.repository";
-import { ProductRepositoryInteface } from "../../domain/product/product.repository.inteface";
-import { CategoryController } from "./resources/category/product.controller";
-import { CategoryRepository } from "../database/typeorm/mongodb/repositories/product.repository copy";
+import { CategoryController } from "./resources/category/category.controller";
+import { CategoryRepository } from "../database/typeorm/mongodb/repositories/category.repository";
 
 export class ServerApplication extends Server {
   constructor() {
@@ -14,7 +13,7 @@ export class ServerApplication extends Server {
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
-    let productController = new ProductController(new ProductRepository());
+    let productController = new ProductController(new ProductRepository(), new CategoryRepository());
     let categoriesController = new CategoryController(new CategoryRepository());
     super.addControllers([productController,categoriesController]);
   }

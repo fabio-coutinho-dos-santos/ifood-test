@@ -2,60 +2,60 @@ import Category from "../category/category.entity";
 
 export class Product {
   
-  private _category: Category
+  private category: Category
 
   constructor(
-    private _ownerId: string,
-    private _title: string,
-    private _description: string,
-    private _price: number,
+    private ownerId: string,
+    private title: string,
+    private description: string,
+    private price: number,
   ) {
     this.validate();
   }
 
   private validate() {
-    if (!this._ownerId || this._ownerId === "") {
+    if (!this.ownerId || this.ownerId === "") {
       throw new Error("Owner Id is required");
     }
 
-    if (!this._title || this._title === "") {
+    if (!this.title || this.title === "") {
       throw new Error("Title is required");
     }
 
-    if (!this._description || this._description === "") {
+    if (!this.description || this.description === "") {
       throw new Error("Description is required");
     }
 
-    if (!this._price) {
+    if (!this.price) {
       throw new Error("Price is required");
     }
 
-    if (this._price < 0) {
+    if (this.price < 0) {
       return new Error("Invalid price")
     }
   }
 
-  get category() {
-    return this._category;
+  get _category() {
+    return this.category;
   }
 
-  get title() {
-    return this._title;
+  get _title() {
+    return this.title;
   }
 
-  get price() {
-    return this._price;
+  get _price() {
+    return this.price;
   }
 
-  get description() {
-    return this._description;
+  get _description() {
+    return this.description;
   }
 
-  get ownerId() {
-    return this._ownerId;
+  get _ownerId() {
+    return this.ownerId;
   }
 
   changeCategory(newCategory: Category) {
-    this._category = newCategory
+    this.category = newCategory
   }
 }

@@ -1,35 +1,35 @@
 export default class Category {
   constructor(
-    private _title: string,
-    private _description: string,
-    private _ownerId: string
+    private title: string,
+    private description: string,
+    private ownerId: string
   ) {
     this.validate();
   }
 
   private validate() {
-    if (!this._ownerId || this._ownerId === "") {
+    if (!this.ownerId || this.ownerId === "") {
       throw new Error("Owner Id is required");
     }
 
-    if (!this._title || this._title === "") {
+    if (!this.title || this.title === "") {
       throw new Error("Title is required");
     }
 
-    if (!this._description || this._description === "") {
+    if (!this.description || this.description === "") {
       throw new Error("Description is required");
     }
   }
 
-  get title() {
-    return this._title;
+  get _title() {
+    return this.title;
   }
 
-  get description() {
-    return this._description;
+  get _description() {
+    return this.description;
   }
 
-  get ownerId() {
-    return this._ownerId;
+  get _ownerId() {
+    return this.ownerId;
   }
 }

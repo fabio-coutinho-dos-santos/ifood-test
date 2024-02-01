@@ -1,9 +1,8 @@
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, FindOneOptions, Repository } from "typeorm";
 import { ProductRepositoryInteface } from "../../../../../domain/product/product.repository.inteface";
 import { ProductModel } from "../entities/product.mongo.entity";
 import { AppDataSource } from "../data-source";
 import { Product } from "../../../../../domain/product/product.entity";
-import { title } from "process";
 
 export class ProductRepository implements ProductRepositoryInteface {
   private repository: Repository<ProductModel>;
@@ -14,16 +13,16 @@ export class ProductRepository implements ProductRepositoryInteface {
 
   async create(product: Product): Promise<ProductModel> {
     const newProduct = {
-      ownerId: product.ownerId,
-      title: product.title,
-      description: product.description,
-      price: product.price,
+      ownerId: product._ownerId,
+      title: product._title,
+      description: product._description,
+      price: product._price,
     };
     return await this.repository.save(newProduct);
   }
 
-  update(entity: ProductModel, id: string): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async update(entity: any, id: string): Promise<unknown> {
+    return await this.repository.update(id, entity)
   }
 
   async delete(id: string): Promise<DeleteResult> {
@@ -32,5 +31,9 @@ export class ProductRepository implements ProductRepositoryInteface {
   
   async getAll(): Promise<ProductModel[]> {
     return await this.repository.find();
+  }
+
+  async findById(id: FindOneOptions<ProductModel>): Promise<ProductModel | null> {
+    return await this.repository.findOne(id);
   }
 }
