@@ -16,7 +16,7 @@ export class CategoryController {
     private readonly categoryRepository: CategoryRepositoryInterface,
     private readonly queueService: QueueServiceInterface
   ) {
-    this.queueService.setup()
+    this.queueService.setup();
   }
 
   @Post()
@@ -26,7 +26,10 @@ export class CategoryController {
       const categoryCreated = await new CreateCategory(
         this.categoryRepository
       ).execute(input);
-      this.queueService.nofity('category-created');
+      this.queueService.nofity("category-created", {
+        DataType: "String",
+        StringValue: categoryCreated.ownerId,
+      });
       return res.status(201).json(categoryCreated);
     } catch (error: unknown) {
       console.log(error);
@@ -52,10 +55,17 @@ export class CategoryController {
     const id = req.params.id;
     const input: Partial<CategoryDto> = req.body;
     await this.categoryRepository.update(input, id);
-    const productUpdate = await this.categoryRepository.findById(
+    const categoryUpdated = await this.categoryRepository.findById(
       id as FindOneOptions
     );
-    this.queueService.nofity('category-updated');
-    return resp.status(200).json(productUpdate);
+
+    if (categoryUpdated) {
+      this.queueService.nofity("category-updated", {
+        DataType: "String",
+        StringValue: categoryUpdated.ownerId,
+      });
+    }
+
+    return resp.status(200).json(categoryUpdated);
   }
 }

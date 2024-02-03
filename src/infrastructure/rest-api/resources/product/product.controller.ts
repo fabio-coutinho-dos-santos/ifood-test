@@ -16,7 +16,7 @@ export class ProductController {
   constructor(
     private readonly productRepository: ProductRepositoryInteface,
     private readonly categoryRepository: CategoryRepositoryInterface,
-    private readonly queueService: QueueServiceInterface
+    private readonly queueService: QueueServiceInterface,
   ) {
     this.queueService.setup();
   }
@@ -28,7 +28,10 @@ export class ProductController {
       const newProduct = await new CreateProduct(
         this.productRepository
       ).execute(productDto);
-      this.queueService.nofity('product-created');
+      this.queueService.nofity("product-created", {
+        DataType: "String",
+        StringValue: newProduct.ownerId,
+      });
       return res.status(201).json(newProduct);
     } catch (error: unknown) {
       console.log(error);
@@ -87,7 +90,14 @@ export class ProductController {
     const productUpdate = await this.productRepository.findById(
       id as FindOneOptions
     );
-    this.queueService.nofity('product-updated');
+
+    if (productUpdate) {
+      this.queueService.nofity("product-updated", {
+        DataType: "String",
+        StringValue: productUpdate.ownerId,
+      });
+    }
+
     return resp.status(200).json(productUpdate);
   }
 }

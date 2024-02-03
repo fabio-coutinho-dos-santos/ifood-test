@@ -21,7 +21,7 @@ export default class SnsQueueService implements QueueServiceInterface {
 
   async nofity(
     message: string,
-    attributes: MessageAttributeValue
+    ownerId: MessageAttributeValue
   ): Promise<Boolean> {
     try {
       await this.snsClient.send(
@@ -29,7 +29,7 @@ export default class SnsQueueService implements QueueServiceInterface {
           Message: message,
           TopicArn: QUEUE_CONFIG.topic,
           MessageAttributes: {
-            attributes,
+            ownerId,
           },
         })
       );

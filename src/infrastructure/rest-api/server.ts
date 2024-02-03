@@ -7,6 +7,8 @@ import { ProductRepository } from "../database/typeorm/mongodb/repositories/prod
 import { CategoryController } from "./resources/category/category.controller";
 import { CategoryRepository } from "../database/typeorm/mongodb/repositories/category.repository";
 import SnsQueueService from "../queue/aws/sns-queue.service";
+import S3Service from "../storage/aws/s3.service";
+import { CatalogController } from "./resources/catalog/catalog.controller";
 
 export class ServerApplication extends Server {
   constructor() {
@@ -14,16 +16,21 @@ export class ServerApplication extends Server {
 
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
-    let productController = new ProductController(
+    const productController = new ProductController(
       new ProductRepository(),
       new CategoryRepository(),
       new SnsQueueService()
     );
-    let categoriesController = new CategoryController(
+    const categoriesController = new CategoryController(
       new CategoryRepository(),
       new SnsQueueService()
     );
-    super.addControllers([productController, categoriesController]);
+    const catalogController = new CatalogController(new S3Service());
+    super.addControllers([
+      productController,
+      categoriesController,
+      catalogController,
+    ]);
   }
 
   async start(port: number) {
