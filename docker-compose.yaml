@@ -27,6 +27,7 @@ services:
       MONDODB_LOG_DIR: /dev/null
     volumes:
       - mongodbdata:/data/db
+    command: mongod --quiet
     networks:
         - net-ifood
 networks:

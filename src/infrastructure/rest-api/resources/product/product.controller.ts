@@ -8,15 +8,18 @@ import CreateProduct from "../../../../use-cases/create-product/create-product";
 import { ProductRepositoryInteface } from "../../../../domain/product/product.repository.inteface";
 import { FindOneOptions } from "typeorm";
 import { CategoryRepositoryInterface } from "../../../../domain/category/category.repository.interface";
-import { CategoryModel } from "../../../database/typeorm/mongodb/entities/category.mongo.entity";
 import SetCategory from "../../../../use-cases/set-category/set-category";
+import QueueServiceInterface from "../../../queue/@shared/queue.service.inteface";
 
 @Controller("api/products")
 export class ProductController {
   constructor(
     private readonly productRepository: ProductRepositoryInteface,
-    private readonly categoryRepository: CategoryRepositoryInterface
-  ) {}
+    private readonly categoryRepository: CategoryRepositoryInterface,
+    private readonly queueService: QueueServiceInterface
+  ) {
+    this.queueService.setup();
+  }
 
   @Post()
   async create(req: Request, res: Response) {
@@ -25,6 +28,7 @@ export class ProductController {
       const newProduct = await new CreateProduct(
         this.productRepository
       ).execute(productDto);
+      this.queueService.nofity('product-created');
       return res.status(201).json(newProduct);
     } catch (error: unknown) {
       console.log(error);
@@ -68,7 +72,6 @@ export class ProductController {
       const productWithCategory = await new SetCategory(
         this.productRepository
       ).execute(categoryStored, productStored);
-
       return resp.status(200).json(productWithCategory);
     } catch (error: unknown) {
       console.log(error);
@@ -84,6 +87,7 @@ export class ProductController {
     const productUpdate = await this.productRepository.findById(
       id as FindOneOptions
     );
+    this.queueService.nofity('product-updated');
     return resp.status(200).json(productUpdate);
   }
 }

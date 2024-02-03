@@ -7,12 +7,17 @@ import { CategoryRepositoryInterface } from "../../../../domain/category/categor
 import { CategoryDto } from "../../../../domain/category/category.dto";
 import { CreateCategory } from "../../../../use-cases/create-category/create-category";
 import { FindOneOptions } from "typeorm";
+import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
+import QueueServiceInterface from "../../../queue/@shared/queue.service.inteface";
 
 @Controller("api/categories")
 export class CategoryController {
   constructor(
-    private readonly categoryRepository: CategoryRepositoryInterface
-  ) {}
+    private readonly categoryRepository: CategoryRepositoryInterface,
+    private readonly queueService: QueueServiceInterface
+  ) {
+    this.queueService.setup()
+  }
 
   @Post()
   async create(req: Request, res: Response) {
@@ -21,6 +26,7 @@ export class CategoryController {
       const categoryCreated = await new CreateCategory(
         this.categoryRepository
       ).execute(input);
+      this.queueService.nofity('category-created');
       return res.status(201).json(categoryCreated);
     } catch (error: unknown) {
       console.log(error);
@@ -49,6 +55,7 @@ export class CategoryController {
     const productUpdate = await this.categoryRepository.findById(
       id as FindOneOptions
     );
+    this.queueService.nofity('category-updated');
     return resp.status(200).json(productUpdate);
   }
 }
