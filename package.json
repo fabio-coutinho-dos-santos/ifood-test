@@ -34,6 +34,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@aws-sdk/client-sns": "3.504.0",
     "@overnightjs/core": "1.7.6",
     "@types/yamljs": "^0.2.34",
     "class-validator": "0.14.1",
